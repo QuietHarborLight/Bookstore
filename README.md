@@ -102,3 +102,16 @@ This MVP has no authentication. It is intended for trusted local use on a single
 4. Log a customer special order and advance its status
 
 This should complete in a few minutes once you are familiar with the UI.
+
+## Build Windows executable
+
+Windows only. From the project root with the virtual environment activated:
+
+```bash
+pip install -r requirements.txt -r requirements-build.txt
+pyinstaller bookstore.spec
+```
+
+Output folder: `dist/Bookstore/` (`Bookstore.exe`, `README.md`, `_internal/`).
+
+Ship the whole folder. On first run, `bookstore.db` is created next to `Bookstore.exe`.

@@ -3,12 +3,20 @@
 from __future__ import annotations
 
 import sqlite3
+import sys
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
-DEFAULT_DB_PATH = Path("bookstore.db")
+
+def default_db_path() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent / "bookstore.db"
+    return Path(__file__).resolve().parent / "bookstore.db"
+
+
+DEFAULT_DB_PATH = default_db_path()
 
 CUSTOMER_ORDER_STATUSES = ("pending", "ordered", "received", "fulfilled")
 
