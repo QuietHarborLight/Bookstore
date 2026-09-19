@@ -2,9 +2,11 @@
 
 import streamlit as st
 
+import auth
 import db
 
 st.set_page_config(page_title="Purchase Orders", page_icon="📦", layout="wide")
+auth.require_unlock()
 db.init_db()
 
 st.title("Purchase Orders")

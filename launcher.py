@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 import shutil
 import sys
+
+import auth
 import threading
 import time
 import urllib.error
@@ -65,6 +67,17 @@ def _print_banner() -> None:
 
 
 def main() -> None:
+    auth.load_env_file(auth.env_file_path())
+    if auth.configured_pin() is None:
+        print(
+            f"Error: {auth.PIN_ENV_VAR} is not set. "
+            f"Create a {auth.ENV_FILE_NAME} file next to Bookstore.exe "
+            f"with {auth.PIN_ENV_VAR}=your-pin and restart the app.",
+            file=sys.stderr,
+        )
+        input("Press Enter to close this window...")
+        sys.exit(1)
+
     bundle = _bundle_dir()
     app_dir = _app_dir()
     os.chdir(app_dir)
