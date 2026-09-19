@@ -2,10 +2,12 @@
 
 import streamlit as st
 
+import auth
 import db
 
 st.set_page_config(page_title="Bookstore MVP", page_icon="📚", layout="wide")
 
+auth.require_unlock()
 db.init_db()
 
 st.title("Bookstore Management")

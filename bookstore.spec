@@ -6,11 +6,37 @@ from PyInstaller.utils.hooks import collect_all
 
 block_cipher = None
 
+dist_dir = Path("dist") / "Bookstore"
+backup_dir = Path("build") / "_preserve_dist_data"
+PRESERVE_FILES = ["bookstore.db", ".env"]
+
+
+def backup_user_files() -> None:
+    if not dist_dir.is_dir():
+        return
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    for name in PRESERVE_FILES:
+        src = dist_dir / name
+        if src.is_file():
+            shutil.copy2(src, backup_dir / name)
+
+
+def restore_user_files() -> None:
+    if not backup_dir.is_dir():
+        return
+    dist_dir.mkdir(parents=True, exist_ok=True)
+    for name in PRESERVE_FILES:
+        src = backup_dir / name
+        if src.is_file():
+            shutil.copy2(src, dist_dir / name)
+
+
 streamlit_datas, streamlit_binaries, streamlit_hiddenimports = collect_all("streamlit")
 altair_datas, altair_binaries, altair_hiddenimports = collect_all("altair")
 
 datas = [
     ("app.py", "."),
+    ("auth.py", "."),
     ("db.py", "."),
     ("pages", "pages"),
     (".streamlit/config.toml", ".streamlit"),
@@ -55,6 +81,10 @@ exe = EXE(
     entitlements_file=None,
 )
 
+backup_user_files()
+if dist_dir.is_dir():
+    shutil.rmtree(dist_dir)
+
 coll = COLLECT(
     exe,
     a.binaries,
@@ -65,7 +95,6 @@ coll = COLLECT(
     name="Bookstore",
 )
 
-dist_dir = Path("dist") / "Bookstore"
 readme_src = Path("packaging") / "README.md"
 readme_dst = dist_dir / "README.md"
 config_src = Path(".streamlit") / "config.toml"
@@ -76,3 +105,9 @@ if readme_src.is_file():
 if config_src.is_file():
     config_dst_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(config_src, config_dst)
+env_example_src = Path(".env.example")
+env_example_dst = dist_dir / ".env.example"
+if env_example_src.is_file():
+    shutil.copy2(env_example_src, env_example_dst)
+
+restore_user_files()

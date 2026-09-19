@@ -40,6 +40,18 @@ pip install -r requirements.txt
 
 ## Run the app
 
+Create a local `.env` file with your shared staff PIN before starting the app:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set your PIN:
+
+```text
+BOOKSTORE_PIN=your-pin
+```
+
 Activate the virtual environment first (see Setup above), then:
 
 ```bash
@@ -50,9 +62,12 @@ streamlit run app.py
 
 ```bash
 cd /path/to/project
+cp .env.example .env
 source .venv/Scripts/activate
 streamlit run app.py
 ```
+
+The `.env` file is gitignored. A shell environment variable named `BOOKSTORE_PIN` also works and takes precedence over `.env` if both are set.
 
 Your browser opens to the home page (usually `http://localhost:8501`). Press `Ctrl+C` in the terminal to stop the app. Use the sidebar to navigate:
 
@@ -92,7 +107,7 @@ To back up, stop the app and copy that file to a safe location. To restore, repl
 
 ## Security note
 
-This MVP has no authentication. It is intended for trusted local use on a single machine by the bookstore owner or staff.
+This MVP uses a single shared PIN (`BOOKSTORE_PIN` in `.env`) to gate access — not individual user accounts or roles. It is intended for trusted local use on a single machine by the bookstore owner or staff. Keep `.env` private and do not commit it. The app binds to `localhost` only; do not expose it on your network without stronger security.
 
 ## Daily workflow smoke test
 
